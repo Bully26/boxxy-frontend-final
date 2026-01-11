@@ -8,6 +8,8 @@ interface EditorNavBarProps {
   isLoading: boolean;
   onShowAll: () => void;
   onFilterByColor: (color: BoxColor) => void;
+
+  // this is the point where you submit color for exectution 
   onSubmitByColor: (color: BoxColor) => void;
 }
 

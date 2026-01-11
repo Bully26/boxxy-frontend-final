@@ -8,6 +8,9 @@ interface InputOutputPanelProps {
   onInputChange: (value: string) => void;
 }
 
+
+
+
 export function InputOutputPanel({
   input,
   output,
