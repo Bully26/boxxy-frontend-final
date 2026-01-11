@@ -19,7 +19,7 @@ type InputOutputStore = {
 
 const useInputOutputStore = create<InputOutputStore>((set) => ({
   input: 'something here',
-  output: '',
+  output: 'bruh this is hard as fuck ',
   hasError: false,
   onInputChange: (value: string) => set((input) => ({ input: value })),
   onOutputChange: (value: string) => set((output) => ({ output: value })),

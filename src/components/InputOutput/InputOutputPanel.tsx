@@ -59,7 +59,7 @@ export function InputOutputPanel() {
           )}
         </div>
         <div className="flex-1 p-3 overflow-y-auto">
-          {/* <div
+           <div
             className={`w-full h-full bg-editor-bg border border-border rounded-md p-3 text-sm font-mono overflow-y-auto ${hasError ? 'text-terminal-error' : 'text-foreground'
               }`}
           >
@@ -70,7 +70,7 @@ export function InputOutputPanel() {
                 Program output will appear here...
               </span>
             )}
-          </div> */}
+          </div> 
         </div>
       </div>
     </div>
