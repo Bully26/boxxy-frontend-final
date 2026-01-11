@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { FileInput, FileOutput, AlertCircle } from 'lucide-react';
+import { Input, Output, InputChange, OutputChange, HasError } from '../../store/iInputOutputStore';
+
 
 interface InputOutputPanelProps {
   input: string;
@@ -9,14 +11,12 @@ interface InputOutputPanelProps {
 }
 
 
-
-
-export function InputOutputPanel({
-  input,
-  output,
-  hasError,
-  onInputChange
-}: InputOutputPanelProps) {
+export function InputOutputPanel() {
+  const input = Input();
+  const output = Output();
+  const onInputChange = InputChange();
+  const onOutputChange = OutputChange();
+  const hasError = HasError();
   return (
     <div className="flex flex-col h-full border-l border-border bg-sidebar">
       {/* Input Section */}
@@ -59,10 +59,9 @@ export function InputOutputPanel({
           )}
         </div>
         <div className="flex-1 p-3 overflow-y-auto">
-          <div 
-            className={`w-full h-full bg-editor-bg border border-border rounded-md p-3 text-sm font-mono overflow-y-auto ${
-              hasError ? 'text-terminal-error' : 'text-foreground'
-            }`}
+          {/* <div
+            className={`w-full h-full bg-editor-bg border border-border rounded-md p-3 text-sm font-mono overflow-y-auto ${hasError ? 'text-terminal-error' : 'text-foreground'
+              }`}
           >
             {output ? (
               <pre className="whitespace-pre-wrap">{output}</pre>
@@ -71,7 +70,7 @@ export function InputOutputPanel({
                 Program output will appear here...
               </span>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
