@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useCodeEditorStore } from '@/store/codeEditorStore';
 import {
   DndContext,
   closestCenter,
@@ -18,33 +19,22 @@ import { CodeBox, BoxColor } from '@/types/codeBox';
 import { CodeBoxItem } from './CodeBoxItem';
 import { EditorNavBar } from './EditorNavBar';
 
-interface CodeEditorAreaProps {
-  boxes: CodeBox[];
-  filterColor: BoxColor | null;
-  isLoading: boolean;
-  onCodeChange: (id: string, code: string) => void;
-  onColorChange: (id: string, color: BoxColor) => void;
-  onAddBox: (id: string) => void;
-  onDeleteBox: (id: string) => void;
-  onReorder: (activeId: string, overId: string) => void;
-  onShowAll: () => void;
-  onFilterByColor: (color: BoxColor) => void;
-  onSubmitByColor: (color: BoxColor) => void;
-}
 
-export function CodeEditorArea({
-  boxes,
-  filterColor,
-  isLoading,
-  onCodeChange,
-  onColorChange,
-  onAddBox,
-  onDeleteBox,
-  onReorder,
-  onShowAll,
-  onFilterByColor,
-  onSubmitByColor
-}: CodeEditorAreaProps) {
+
+export function CodeEditorArea() {
+  const {
+    boxes,
+    filterColor,
+    isLoading,
+    updateCode,
+    updateColor,
+    addBox,
+    deleteBox,
+    reorderBoxes,
+    setFilterColor,
+    runCode
+  } = useCodeEditorStore();
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -64,21 +54,34 @@ export function CodeEditorArea({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      onReorder(active.id as string, over.id as string);
+      reorderBoxes(active.id as string, over.id as string);
     }
+  };
+
+  // Wrapper for submit that gets the code from store logic
+  const handleSubmitByColor = async (color: BoxColor) => {
+    // The store implementation of runCode takes 'code' string. 
+    // We need to construct it here or update store to handle it.
+    // Store has `getCombinedCode`.
+    const code = useCodeEditorStore.getState().getCombinedCode(color);
+    if (!code.trim()) return;
+
+    // also open terminal
+    useCodeEditorStore.getState().setTerminalOpen(true);
+    await runCode(code);
   };
 
   return (
     <div className="flex flex-col h-full">
       <EditorNavBar
         filterColor={filterColor}
-        submitColor={null}
+        submitColor={null} // EditorNavBar expects this if we want to show submit button specific to color?
         isLoading={isLoading}
-        onShowAll={onShowAll}
-        onFilterByColor={onFilterByColor}
-        onSubmitByColor={onSubmitByColor}
+        onShowAll={() => setFilterColor(null)}
+        onFilterByColor={setFilterColor}
+        onSubmitByColor={handleSubmitByColor}
       />
-      
+
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         <DndContext
           sensors={sensors}
@@ -95,16 +98,16 @@ export function CodeEditorArea({
                   key={box.id}
                   box={box}
                   canDelete={boxes.length > 1}
-                  onCodeChange={onCodeChange}
-                  onColorChange={onColorChange}
-                  onAddBox={onAddBox}
-                  onDeleteBox={onDeleteBox}
+                  onCodeChange={updateCode}
+                  onColorChange={updateColor}
+                  onAddBox={addBox}
+                  onDeleteBox={deleteBox}
                 />
               ))}
             </AnimatePresence>
           </SortableContext>
         </DndContext>
-        
+
         {filteredBoxes.length === 0 && (
           <div className="flex items-center justify-center h-48 text-muted-foreground">
             <p>No code boxes match the selected filter.</p>

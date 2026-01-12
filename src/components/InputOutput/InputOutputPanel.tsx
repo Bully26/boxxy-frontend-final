@@ -1,22 +1,14 @@
 import { motion } from 'framer-motion';
 import { FileInput, FileOutput, AlertCircle } from 'lucide-react';
-import { Input, Output, InputChange, OutputChange, HasError } from '../../store/iInputOutputStore';
-
-
-interface InputOutputPanelProps {
-  input: string;
-  output: string;
-  hasError: boolean;
-  onInputChange: (value: string) => void;
-}
-
+import { useCodeEditorStore } from '@/store/codeEditorStore';
 
 export function InputOutputPanel() {
-  const input = Input();
-  const output = Output();
-  const onInputChange = InputChange();
-  const onOutputChange = OutputChange();
-  const hasError = HasError();
+  const {
+    input,
+    outputPanelText: output,
+    hasError,
+    setInput: onInputChange
+  } = useCodeEditorStore();
   return (
     <div className="flex flex-col h-full border-l border-border bg-sidebar">
       {/* Input Section */}
@@ -59,7 +51,7 @@ export function InputOutputPanel() {
           )}
         </div>
         <div className="flex-1 p-3 overflow-y-auto">
-           <div
+          <div
             className={`w-full h-full bg-editor-bg border border-border rounded-md p-3 text-sm font-mono overflow-y-auto ${hasError ? 'text-terminal-error' : 'text-foreground'
               }`}
           >
@@ -70,7 +62,7 @@ export function InputOutputPanel() {
                 Program output will appear here...
               </span>
             )}
-          </div> 
+          </div>
         </div>
       </div>
     </div>

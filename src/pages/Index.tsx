@@ -1,62 +1,17 @@
-import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Code2 } from 'lucide-react';
-import { BoxColor } from '@/types/codeBox';
-import { useCodeBoxes } from '@/hooks/useCodeBoxes';
-import { useExecution } from '@/hooks/useExecution';
 import { CodeEditorArea } from '@/components/CodeEditor/CodeEditorArea';
 import { TerminalPanel } from '@/components/Terminal/TerminalPanel';
 import { InputOutputPanel } from '@/components/InputOutput/InputOutputPanel';
+import { useCodeEditorStore } from '@/store/codeEditorStore';
 
 const Index = () => {
-  const {
-    boxes,
-    addBox,
-    deleteBox,
-    updateCode,
-    updateColor,
-    reorderBoxes,
-    getCombinedCode
-  } = useCodeBoxes();
-
-  const {
-    isLoading,
-    terminalOutput,
-    outputPanelText,
-    hasError,
-    executeCode,
-    clearOutput
-  } = useExecution();
-
-  const [filterColor, setFilterColor] = useState<BoxColor | null>(null);
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [input, setInput] = useState('');
-
-  const handleShowAll = useCallback(() => {
-    setFilterColor(null);
-  }, []);
-
-  const handleFilterByColor = useCallback((color: BoxColor) => {
-    setFilterColor(color);
-  }, []);
-
-  const handleSubmitByColor = useCallback(async (color: BoxColor) => {
-    const code = getCombinedCode(color);
-    if (!code.trim()) {
-      return;
-    }
-    setIsTerminalOpen(true);
-    await executeCode(code, input);
-  }, [getCombinedCode, input, executeCode]);
-
-  const handleToggleTerminal = useCallback(() => {
-    setIsTerminalOpen(prev => !prev);
-  }, []);
+  const { boxes } = useCodeEditorStore();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header */}
-      <motion.header 
+      {/* Header - god i hate css why is it so hard */}
+      <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex items-center justify-between px-4 py-3 bg-secondary border-b border-border"
@@ -75,47 +30,24 @@ const Index = () => {
         </div>
       </motion.header>
 
-      {/* Main Content */}
+      {/* Main Content - where the magic (bugs) happens */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: Code Editor + Terminal */}
+        {/* Left: Code Editor + Terminal - basically the whole app */}
         <div className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 overflow-hidden">
-            <CodeEditorArea
-              boxes={boxes}
-              filterColor={filterColor}
-              isLoading={isLoading}
-              onCodeChange={updateCode}
-              onColorChange={updateColor}
-              onAddBox={addBox}
-              onDeleteBox={deleteBox}
-              onReorder={reorderBoxes}
-              onShowAll={handleShowAll}
-              onFilterByColor={handleFilterByColor}
-              onSubmitByColor={handleSubmitByColor}
-            />
+            <CodeEditorArea />
           </div>
-          
-          <TerminalPanel
-            isOpen={isTerminalOpen}
-            output={terminalOutput}
-            isLoading={isLoading}
-            onToggle={handleToggleTerminal}
-            onClear={clearOutput}
-          />
+
+          <TerminalPanel />
         </div>
 
-        {/* Right: Input/Output Panel */}
-        <motion.div 
+        {/* Right: Input/Output Panel - stays on the side like a rejected friend */}
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="w-80 flex-shrink-0"
         >
-          <InputOutputPanel
-            input={input}
-            output={outputPanelText}
-            hasError={hasError}
-            onInputChange={setInput}
-          />
+          <InputOutputPanel />
         </motion.div>
       </div>
     </div>

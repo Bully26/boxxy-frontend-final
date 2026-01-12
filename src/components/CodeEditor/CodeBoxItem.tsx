@@ -60,11 +60,10 @@ export const CodeBoxItem = memo(function CodeBoxItem({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20, height: 0 }}
       transition={{ duration: 0.2 }}
-      className={`relative rounded-md overflow-hidden bg-editor-bg ${boxColorClasses[box.color]} ${
-        isDragging ? 'z-50 shadow-2xl opacity-90' : 'z-0'
-      }`}
+      className={`relative rounded-md overflow-hidden bg-editor-bg ${boxColorClasses[box.color]} ${isDragging ? 'z-50 shadow-2xl opacity-90' : 'z-0'
+        }`}
     >
-      {/* Header */}
+      {/* Header - drag handle and other junk */}
       <div className="flex items-center justify-between px-3 py-2 bg-secondary/50 border-b border-border">
         <div className="flex items-center gap-2">
           <button
@@ -77,13 +76,13 @@ export const CodeBoxItem = memo(function CodeBoxItem({
           </button>
           <span className="text-xs text-muted-foreground font-mono">C++</span>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <ColorSelector
             currentColor={box.color}
             onColorChange={(color) => onColorChange(box.id, color)}
           />
-          
+
           <div className="flex items-center gap-1 border-l border-border pl-3">
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -94,17 +93,16 @@ export const CodeBoxItem = memo(function CodeBoxItem({
             >
               <Plus className="w-4 h-4" />
             </motion.button>
-            
+
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => onDeleteBox(box.id)}
               disabled={!canDelete}
-              className={`action-button ${
-                canDelete 
-                  ? 'text-muted-foreground hover:text-destructive' 
+              className={`action-button ${canDelete
+                  ? 'text-muted-foreground hover:text-destructive'
                   : 'text-muted-foreground/30 cursor-not-allowed'
-              }`}
+                }`}
               title={canDelete ? 'Delete box' : 'Cannot delete last box'}
             >
               <Trash2 className="w-4 h-4" />
@@ -113,7 +111,7 @@ export const CodeBoxItem = memo(function CodeBoxItem({
         </div>
       </div>
 
-      {/* Editor */}
+      {/* Editor - please dont crash please dont crash */}
       <div style={{ height: editorHeight }}>
         <Editor
           height="100%"

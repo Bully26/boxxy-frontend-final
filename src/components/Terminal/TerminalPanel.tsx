@@ -1,25 +1,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal as TerminalIcon, ChevronUp, ChevronDown, X, Loader2 } from 'lucide-react';
 
-interface TerminalPanelProps {
-  isOpen: boolean;
-  output: string;
-  isLoading: boolean;
-  onToggle: () => void;
-  onClear: () => void;
-}
+import { useCodeEditorStore } from '@/store/codeEditorStore';
 
-export function TerminalPanel({
-  isOpen,
-  output,
-  isLoading,
-  onToggle,
-  onClear
-}: TerminalPanelProps) {
+export function TerminalPanel() {
+  const {
+    isTerminalOpen: isOpen,
+    terminalOutput: output,
+    isLoading,
+    toggleTerminal: onToggle,
+    clearOutput: onClear
+  } = useCodeEditorStore();
   return (
     <div className="border-t border-border bg-terminal-bg">
       {/* Terminal Header */}
-      <div 
+      <div
         className="flex items-center justify-between px-4 py-2 bg-secondary cursor-pointer hover:bg-accent transition-colors"
         onClick={onToggle}
       >
@@ -30,7 +25,7 @@ export function TerminalPanel({
             <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
           )}
         </div>
-        
+
         <div className="flex items-center gap-2">
           {isOpen && (
             <motion.button
@@ -70,14 +65,13 @@ export function TerminalPanel({
               {output ? (
                 <pre className="whitespace-pre-wrap text-foreground/90">
                   {output.split('\n').map((line, index) => (
-                    <div 
+                    <div
                       key={index}
-                      className={`${
-                        line.includes('error') ? 'text-terminal-error' :
-                        line.includes('warning') ? 'text-terminal-warning' :
-                        line.startsWith('$') ? 'text-terminal-success' :
-                        ''
-                      }`}
+                      className={`${line.includes('error') ? 'text-terminal-error' :
+                          line.includes('warning') ? 'text-terminal-warning' :
+                            line.startsWith('$') ? 'text-terminal-success' :
+                              ''
+                        }`}
                     >
                       {line}
                     </div>
