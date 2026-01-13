@@ -137,7 +137,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => ({
 
     try {
       // 1. Submit Code - send it to the backend black hole
-      const submitResponse = await fetch('http://localhost:3000/submit', {
+      const submitResponse = await fetch(`${import.meta.env.VITE_API_URL}/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => ({
       while (status === 'PENDING' || status === 'SUBMITTED') {
         await new Promise((resolve) => setTimeout(resolve, pollInterval));
 
-        const checkResponse = await fetch(`http://localhost:3000/check/${jobId}`);
+        const checkResponse = await fetch(`${import.meta.env.VITE_API_URL}/check/${jobId}`);
         if (!checkResponse.ok) {
           throw new Error('Failed to check status');
         }
